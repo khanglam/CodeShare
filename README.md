@@ -1,8 +1,2 @@
 Commit
 
-Commit
-
-Commit
-
-Commit
-
