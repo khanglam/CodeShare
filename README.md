@@ -1,5 +1,1 @@
-# SneakerBot
-OP Sneaker Bot
-CommitCommitCommitCommitCommitCommitCommitCommit
-CommitCommitCommitCommitCommitCommitCommitCommit
 CommitCommitCommitCommitCommitCommitCommitCommit
