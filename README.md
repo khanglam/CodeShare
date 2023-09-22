@@ -1,8 +1,4 @@
-Hello Gerry
-Hello Gerry
-Hello Gerry
-Hello Gerry
-Hello Gerry
+
 Hello Gerry
 hello
 Hello Gerry
@@ -24,8 +20,7 @@ Hello Gerry
 Hello Gerry
 Hello Gerry
 Hello Gerry
-Hello Gerry
-Hello Gerry
+
 Hello Gerry
 Hello Gerry
 Hello Gerry
