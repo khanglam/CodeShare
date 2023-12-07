@@ -1,14 +1,14 @@
 const { Octokit } = require('@octokit/core');
 
 const octokit = new Octokit({
-    auth: 'YOURPATCODE',
+    auth: '',
 });
 
 //check if you have 10 commits today
 // if not then script will randomly generate numbers on your README.md
-async function checkCommitsForToday() {
-    const owner = 'YOURGITHUBNAME';
-    const repo = 'YOURREPONAME';
+async function makeTenCommits() {
+    const owner = '';
+    const repo = '';
     const filePath = 'README.md';  
     const commitMessage = 'Update README.md';  
 
