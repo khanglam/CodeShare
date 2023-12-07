@@ -12,38 +12,15 @@ async function checkCommitsForToday() {
     const filePath = 'README.md';  
     const commitMessage = 'Update README.md';  
 
-    // Get the current date in YYYY-MM-DD format
-    const todayDate = new Date().toISOString().split('T')[0];
-
     try {
-        // Get the list of commits for the repository
-        const commitsResponse = await octokit.request('GET /repos/{owner}/{repo}/commits', {
-            owner,
-            repo,
-        });
-
-        // Check if any commits were made today
-        const todayCommits = commitsResponse.data.filter(commit => {
-            const commitDate = new Date(commit.commit.author.date).toISOString().split('T')[0];
-            return commitDate === todayDate;
-        });
-
-        if (todayCommits.length >= 10) {
-            console.log(`You have already made ${todayCommits.length} or more commit(s) today.`);
-        } else {
-            console.log(`You have made ${todayCommits.length} commit(s) today. Proceeding to add random commits.`);
-
-            // Get the current content of the README.md file
+        // Make 10 individual commits
+        for (let i = 1; i <= 10; i++) {
+            // Get the latest content and sha of the README.md file
             const existingContent = await octokit.request(`GET /repos/${owner}/${repo}/contents/${filePath}`);
-            const content = existingContent.data.content;
-            const decodedContent = Buffer.from(content, 'base64').toString('utf-8');
+            const decodedContent = Buffer.from(existingContent.data.content, 'base64').toString('utf-8');
 
-            // Modify the content by adding random numbers until reaching 10 commits
-            let modifiedContent = decodedContent;
-            for (let i = todayCommits.length; i < 10; i++) {
-                const randomNumber = Math.floor(Math.random() * 1000);
-                modifiedContent += `\n\nThis is a random number: ${randomNumber}`;
-            }
+            const randomNumber = Math.floor(Math.random() * 1000);
+            const newContent = `${decodedContent}\n\nThis is commit number ${i} with a random number: ${randomNumber}`;
 
             // Update the README.md file
             const updateResponse = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
@@ -51,15 +28,17 @@ async function checkCommitsForToday() {
                 repo,
                 path: filePath,
                 message: commitMessage,
-                content: Buffer.from(modifiedContent).toString('base64'),
+                content: Buffer.from(newContent).toString('base64'),
                 sha: existingContent.data.sha,
             });
 
-            console.log('README.md updated successfully:', updateResponse.data);
+            console.log(`Commit ${i} - README.md updated successfully:`, updateResponse.data);
         }
+
     } catch (error) {
-        console.error('Error checking commits:', error.message);
+        console.error('Error making commits:', error.message);
     }
 }
 
-checkCommitsForToday();
+// Uncomment the following line to run the makeTenCommits function
+makeTenCommits();
