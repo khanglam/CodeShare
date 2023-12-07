@@ -1,2 +1,2 @@
 # Overview
-Make 10 indivdual commits when the script is run.
+Make 10 individual commits when the script is run.
