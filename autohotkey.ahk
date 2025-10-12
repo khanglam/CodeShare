@@ -1,13 +1,18 @@
 #Requires AutoHotkey v2.0
-#SingleInstance Off
-SendMode "Input"
+#SingleInstance Force
 
 ; Global variables
+; currentSendMode := "Play"
+; SendMode currentSendMode
+SetKeyDelay 50, 50
+SetControlDelay 20
+
 isRunning := false
 targetWindowID := 0
 targetWindowTitle := ""
 key1 := "8"  ; Default Dualblade key
 key2 := "2"  ; Default Main Weapon key
+buffTime := 3000
 MyGui := ""
 ToggleBtn := ""
 StatusText := ""
@@ -82,12 +87,13 @@ RefreshWindowList(*) {
     ; Clear dropdown
     WindowDropdown.Delete()
 
-    ; Add windows to dropdown
+    ; Add windows to dropdown (only Lineage windows)
     loop windows.Length {
         try {
             winID := windows[A_Index]
             winTitle := WinGetTitle("ahk_id " . winID)
-            if (winTitle != "") {
+            ; Only add windows that contain "Lineage" in the title
+            if (winTitle != "" && InStr(winTitle, "Lineage")) {
                 WindowDropdown.Add([winTitle . " (ID: " . winID . ")"])
             }
         } catch {
@@ -145,7 +151,7 @@ ToggleSequence(*) {
     isRunning := !isRunning
 
     if (isRunning) {
-        SetTimer MainCycle, 300000  ; 5 minutes
+        SetTimer MainCycle, 5000  ; 5 minutes
         MainCycle()
         StatusText.Text := "Status: ON"
         ToggleBtn.Text := "Stop Sequence (F2)"
@@ -160,21 +166,23 @@ ToggleSequence(*) {
 
 ; Main cycle
 MainCycle() {
-    global targetWindowID, key1
+    global targetWindowID, key1, buffTime
 
     ; Check if target window still exists
     try {
         WinGetTitle("ahk_id " . targetWindowID)
-    } catch {
+    } catch as e {
         MsgBox("Target window lost! Stopping sequence.", "Window Lost", "IconX")
         return
     }
 
     ; Send key 1 (Dualblade)
-    ControlSend("{" . key1 . "}", , "ahk_id " . targetWindowID)
+    try {
+        ControlSend("{" . key1 . "}", "ahk_parent", "ahk_id " . targetWindowID)
+    }
 
-    ; Send key 2 after 5 seconds
-    SetTimer MainWeapon, -5000
+    ; Send key 2 after (buffTime) seconds
+    SetTimer MainWeapon, -buffTime
 }
 
 ; Press key 2
@@ -184,10 +192,12 @@ MainWeapon() {
     ; Check if target window still exists
     try {
         WinGetTitle("ahk_id " . targetWindowID)
-    } catch {
+    } catch as e {
         return
     }
 
     ; Send key 2 (Main Weapon)
-    ControlSend("{" . key2 . "}", , "ahk_id " . targetWindowID)
+    try {
+        ControlSend("{" . key2 . "}", "ahk_parent", "ahk_id " . targetWindowID)
+    }
 }
